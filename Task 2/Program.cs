@@ -15,8 +15,18 @@ public class CM_24_25_PT02{
             PolyValue({1, -2, 1}, 3) 	-> 4
         */
     public static double PolyValue(double[] coefficients, double x){
-        /* Replace this with your code */
-        return Double.PositiveInfinity;
+        int power = 0;
+        double result = 0.0;
+        // coefficient nums[i]
+        // exponent (nums.ToArray().Length - (i + 1))
+
+        for (int i = 0; i < nums.ToArray().Length; i++){
+            result += coefficients[i] * (x * power); 
+            (power == 0)? power = 1 : power * x;
+            Console.Write($"{nums[i]}x^{nums.ToArray().Length - (i + 1)} ");
+        }
+        return (result == 0.0)? Double.PositiveInfinity : result; 
+       
     }
 
     /*
@@ -32,7 +42,6 @@ public class CM_24_25_PT02{
             PolyDerivative({2, 2, -4, 0}) 	-> {6, 4, -4}
     */
     public static double[] PolyDerivative(double[] coefficients){
-
         double[] derivateCoefficients = new double[coefficients.Length - 1];
 
         for (int i = 0; i < derivateCoefficients.Length; i++) {
@@ -117,7 +126,6 @@ public class CM_24_25_PT02{
 
             nums.Add(number);
         } while (source.ToLower() != "q");
-
 
         /* Derivative test
          
