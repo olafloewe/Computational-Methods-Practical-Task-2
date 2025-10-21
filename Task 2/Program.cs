@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-public class CM_24_25_PT02
-{
+public class CM_24_25_PT02{
     /*
     public static double PolyValue(double[] coefficients, double x)
         Input:
@@ -15,8 +14,7 @@ public class CM_24_25_PT02
             PolyValue({1, -2, 1}, 0) 	-> 1
             PolyValue({1, -2, 1}, 3) 	-> 4
         */
-    public static double PolyValue(double[] coefficients, double x)
-    {
+    public static double PolyValue(double[] coefficients, double x){
         /* Replace this with your code */
         return Double.PositiveInfinity;
     }
@@ -33,10 +31,15 @@ public class CM_24_25_PT02
             PolyDerivative({1, 2, 2}) 		-> {2, 2}
             PolyDerivative({2, 2, -4, 0}) 	-> {6, 4, -4}
     */
-    public static double[] PolyDerivative(double[] coefficients)
-    {
-        /* Replace this with your code */
-        return new double[] { };
+    public static double[] PolyDerivative(double[] coefficients){
+
+        double[] derivateCoefficients = new double[coefficients.Length - 1];
+
+        for (int i = 0; i < derivateCoefficients.Length; i++) {
+            derivateCoefficients[derivateCoefficients.Length - (i+1)] = coefficients[derivateCoefficients.Length - (i+1)] * (i + 1);
+        }
+
+        return derivateCoefficients;
     }
 
     /*
@@ -51,8 +54,7 @@ public class CM_24_25_PT02
             PolyRoot({1, 2, 2}) 		-> Infinity
             PolyRoot({2, 2, -4, 0}) 	-> -2
     */
-    public static double PolyRoot(double[] coefficients)
-    {
+    public static double PolyRoot(double[] coefficients){
         /* Replace this with your code */
         /* Use the `PolyValue` and the `PolyDerivative` methods to implement this function. */
         return Double.PositiveInfinity;
@@ -69,8 +71,7 @@ public class CM_24_25_PT02
             PolyDiv({1, -2, 1}, 1) 		-> {1, -1}
             PolyDiv({2, 2, -4, 0}, 0) 	-> {2, 2, -4}
     */
-    public static double[] PolyDiv(double[] coefficients, double xi)
-    {
+    public static double[] PolyDiv(double[] coefficients, double xi){
         /* Replace this with your code */
         return new double[] { };
     }
@@ -87,34 +88,29 @@ public class CM_24_25_PT02
             PolyRoots({1, 2, 2}) 		-> {}
             PolyRoots({2, 2, -4, 0}) 	-> {0, 1, -2}
     */
-    public static double[] PolyRoots(double[] coefficients)
-    {
-        /* Replace this with your code */
+    public static double[] PolyRoots(double[] coefficients){
         /* Use the `PolyRoot` and the `PolyDiv` methods to implement this function. */
         return new double[] { };
     }
 
-    public static void Main(string[] args)
-    {
-        /* Feel free to use this method to test your solution. */
+    public static void Main(string[] args){
         List<double> nums = new List<double>();
         string source;
 
         // loop to ask for arguments
-        do
-        {
+        do{
             double number;
             Console.Clear();
             Console.Write("Coefficients so far: ");
 
+            // print formated coefficients
             Console.Write("[ ");
-            foreach (double i in nums)
-            {
+            foreach (double i in nums){
                 Console.Write($"{i}, ");
             }
             Console.Write("]\n");
 
-            Console.WriteLine("Please enter positive or negative coefficients: \nEnter 'Q' or 'q' to stop entry");
+            Console.WriteLine("Please enter up to 10 positive or negative coefficients: \nEnter 'Q' or 'q' to stop entry");
             source = Console.ReadLine();
 
             if (!double.TryParse(source, out number)) continue;
@@ -122,10 +118,23 @@ public class CM_24_25_PT02
             nums.Add(number);
         } while (source.ToLower() != "q");
 
-        foreach (double i in PolyRoots(nums.ToArray()))
-        {
-            Console.WriteLine(i);
+
+        /* Derivative test
+         
+        Console.WriteLine("Polynomial: ");
+        for (int i = 0; i < nums.ToArray().Length; i++){
+            Console.Write($"{nums[i]}x^{nums.ToArray().Length - (i+1)} ");
         }
+        Console.WriteLine();
+
+        double[] derivative = PolyDerivative(nums.ToArray());
+
+        Console.WriteLine("Derivative: ");
+        for (int i = 0; i < derivative.Length; i++){
+            Console.Write($"{derivative[i]}x^{derivative.Length - (i + 1)} ");
+        }
+
+        */
 
         // HOLD THE LINE (terminal window) !!!
         Console.ReadLine();
