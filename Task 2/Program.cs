@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System;
 
 public class CM_24_25_PT02{
     /*
@@ -20,12 +19,12 @@ public class CM_24_25_PT02{
         // coefficient nums[i]
         // exponent (nums.ToArray().Length - (i + 1))
 
-        for (int i = 0; i < nums.ToArray().Length; i++){
-            result += coefficients[i] * (x * power); 
-            (power == 0)? power = 1 : power * x;
-            Console.Write($"{nums[i]}x^{nums.ToArray().Length - (i + 1)} ");
+        for (int i = 0; i < coefficients.Length; i++){
+            result += coefficients[i] * (x * power);
+            power = (power == 0)? 1 : power * (int)x;
+            Console.Write($"{coefficients[i]}x^{coefficients.Length - (i + 1)} ");
         }
-        return (result == 0.0)? Double.PositiveInfinity : result; 
+        return (result == 0.0) ? Double.PositiveInfinity : result; 
        
     }
 
@@ -128,7 +127,7 @@ public class CM_24_25_PT02{
         } while (source.ToLower() != "q");
 
         /* Derivative test
-         
+         */
         Console.WriteLine("Polynomial: ");
         for (int i = 0; i < nums.ToArray().Length; i++){
             Console.Write($"{nums[i]}x^{nums.ToArray().Length - (i+1)} ");
@@ -142,7 +141,9 @@ public class CM_24_25_PT02{
             Console.Write($"{derivative[i]}x^{derivative.Length - (i + 1)} ");
         }
 
-        */
+        Console.WriteLine($"Value: {PolyValue(nums.ToArray(), 2)}");
+
+
 
         // HOLD THE LINE (terminal window) !!!
         Console.ReadLine();
