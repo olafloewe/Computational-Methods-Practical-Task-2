@@ -71,11 +71,6 @@ public class CM_24_25_PT02{
         double tollerance = 0.0000001;
         bool found = false;
 
-        /*
-        foreach (double coeff in PolyDerivative(coefficients)) {
-            Console.Write(coeff);
-        }
-        */
 
         while (!found) {
             x1 = (x0 - ((PolyValue(coefficients, x0)) / (PolyValue(PolyDerivative(coefficients), x0))));
@@ -86,7 +81,7 @@ public class CM_24_25_PT02{
 
         Console.WriteLine($"PolyRoot result: {x1}");
         return x1;
-        return Double.PositiveInfinity;
+        // return Double.PositiveInfinity;
     }
 
     /*
