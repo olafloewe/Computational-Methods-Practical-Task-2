@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 public class CM_24_25_PT02{
     /*
@@ -63,9 +64,28 @@ public class CM_24_25_PT02{
     */
     public static double PolyRoot(double[] coefficients){
         /* Use the `PolyValue` and the `PolyDerivative` methods to implement this function. */
-        
 
+        double x0 = 50.0;
+        double x1 = 0;
+        // double xn;
+        double tollerance = 0.0000001;
+        bool found = false;
 
+        /*
+        foreach (double coeff in PolyDerivative(coefficients)) {
+            Console.Write(coeff);
+        }
+        */
+
+        while (!found) {
+            x1 = (x0 - ((PolyValue(coefficients, x0)) / (PolyValue(PolyDerivative(coefficients), x0))));
+            Console.WriteLine($"x0: {x0}, x1: {x1}");
+            found = (Math.Abs((x1 - x0)) < tollerance);
+            x0 = x1;
+        }
+
+        Console.WriteLine($"PolyRoot result: {x1}");
+        return x1;
         return Double.PositiveInfinity;
     }
 
@@ -145,7 +165,7 @@ public class CM_24_25_PT02{
 
         // Console.WriteLine($"Value: {PolyValue(nums.ToArray(), 2)}");
 
-
+        PolyRoot(nums.ToArray());
 
         // HOLD THE LINE (terminal window) !!!
         Console.ReadLine();
