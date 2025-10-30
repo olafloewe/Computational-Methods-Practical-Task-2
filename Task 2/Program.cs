@@ -15,14 +15,14 @@ public class CM_24_25_PT02{
             PolyValue({1, -2, 1}, 3) 	-> 4
         */
     public static double PolyValue(double[] coefficients, double x){
-        int power = 0;
+        double power = 0;
         double result = 0.0;
         // coefficient nums[i]
         // exponent (nums.ToArray().Length - (i + 1))
 
         for (int i = 0; i < coefficients.Length; i++){
-            result += coefficients[i] * (x * power);
-            power = (power == 0)? 1 : power * (int)x;
+            power = (power == 0) ? 1 : power * x;
+            result += coefficients[coefficients.Length-1-i] * power;
         }
         Console.WriteLine($"PolyValue result at {x}: {result}");
         return (result == 0.0) ? Double.PositiveInfinity : result; 
@@ -65,23 +65,22 @@ public class CM_24_25_PT02{
     public static double PolyRoot(double[] coefficients){
         /* Use the `PolyValue` and the `PolyDerivative` methods to implement this function. */
 
-        double x0 = 50.0;
+        // TODO check if derivative is zero
+        double x0 = 5.0;
         double x1 = 0;
-        // double xn;
         double tollerance = 0.0000001;
         bool found = false;
 
-
-        while (!found) {
+        // newton method to check for root
+        for (int i = 0; i < 1000 && !found; i++){
             x1 = (x0 - ((PolyValue(coefficients, x0)) / (PolyValue(PolyDerivative(coefficients), x0))));
             Console.WriteLine($"x0: {x0}, x1: {x1}");
-            found = (Math.Abs((x1 - x0)) < tollerance);
+            found = (Math.Abs((x0 - x1)) <= tollerance);
             x0 = x1;
         }
-
         Console.WriteLine($"PolyRoot result: {x1}");
-        return x1;
-        // return Double.PositiveInfinity;
+
+        return (found)? x1 : Double.PositiveInfinity;
     }
 
     /*
@@ -121,13 +120,13 @@ public class CM_24_25_PT02{
         List<double> nums = new List<double>();
         string source;
 
-        // loop to ask for arguments
-        do{
+        // loop to input polynomial coefficients
+        do {
             double number;
-            Console.Clear();
-            Console.Write("Coefficients so far: ");
 
             // print formated coefficients
+            Console.Clear();
+            Console.Write("Coefficients so far: ");
             Console.Write("[ ");
             foreach (double i in nums){
                 Console.Write($"{i}, ");
@@ -138,28 +137,26 @@ public class CM_24_25_PT02{
             source = Console.ReadLine();
 
             if (!double.TryParse(source, out number)) continue;
-
             nums.Add(number);
-        } while (source.ToLower() != "q");
+        } while (source.ToLower() != "q" && nums.Count < 10);
 
-        /* Derivative test
-         */
+        // polynomial display
         Console.WriteLine("Polynomial: ");
         for (int i = 0; i < nums.ToArray().Length; i++){
-            Console.Write($"{nums[i]}x^{nums.ToArray().Length - (i+1)} ");
+            Console.Write($"{nums[i]}x^{nums.ToArray().Length - (i + 1)} ");
         }
         Console.WriteLine();
 
+        // derivative display
         double[] derivative = PolyDerivative(nums.ToArray());
-
         Console.WriteLine("Derivative: ");
         for (int i = 0; i < derivative.Length; i++){
             Console.Write($"{derivative[i]}x^{derivative.Length - (i + 1)} ");
         }
         Console.WriteLine();
 
-        // Console.WriteLine($"Value: {PolyValue(nums.ToArray(), 2)}");
 
+        // function call
         PolyRoot(nums.ToArray());
 
         // HOLD THE LINE (terminal window) !!!
