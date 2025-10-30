@@ -22,10 +22,9 @@ public class CM_24_25_PT02{
         for (int i = 0; i < coefficients.Length; i++){
             result += coefficients[i] * (x * power);
             power = (power == 0)? 1 : power * (int)x;
-            Console.Write($"{coefficients[i]}x^{coefficients.Length - (i + 1)} ");
         }
+        Console.WriteLine($"PolyValue result at {x}: {result}");
         return (result == 0.0) ? Double.PositiveInfinity : result; 
-       
     }
 
     /*
@@ -63,8 +62,10 @@ public class CM_24_25_PT02{
             PolyRoot({2, 2, -4, 0}) 	-> -2
     */
     public static double PolyRoot(double[] coefficients){
-        /* Replace this with your code */
         /* Use the `PolyValue` and the `PolyDerivative` methods to implement this function. */
+        
+
+
         return Double.PositiveInfinity;
     }
 
@@ -140,8 +141,9 @@ public class CM_24_25_PT02{
         for (int i = 0; i < derivative.Length; i++){
             Console.Write($"{derivative[i]}x^{derivative.Length - (i + 1)} ");
         }
+        Console.WriteLine();
 
-        Console.WriteLine($"Value: {PolyValue(nums.ToArray(), 2)}");
+        // Console.WriteLine($"Value: {PolyValue(nums.ToArray(), 2)}");
 
 
 
