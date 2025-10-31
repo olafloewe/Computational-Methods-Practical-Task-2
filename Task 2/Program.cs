@@ -24,8 +24,9 @@ public class CM_24_25_PT02{
             power = (power == 0) ? 1 : power * x;
             result += coefficients[coefficients.Length-1-i] * power;
         }
-        Console.WriteLine($"PolyValue result at {x}: {result}");
-        return (result == 0.0) ? double.NaN : result; 
+        // Console.WriteLine($"PolyValue result at {x}: {result}");
+        //return (result == 0.0) ? double.NaN : result;
+        return result;
     }
 
     /*
@@ -64,22 +65,26 @@ public class CM_24_25_PT02{
     */
     public static double PolyRoot(double[] coefficients){
         /* Use the `PolyValue` and the `PolyDerivative` methods to implement this function. */
-
-        // TODO check if derivative is zero
+        double[] derivative = PolyDerivative(coefficients);
         double x0 = 5.0;
-        double x1 = 0;
+        double x1 = 0.0;
+        double tmp;
         double tollerance = 0.0000001;
-        bool found = false;
+
+        while (PolyValue(derivative, x0) == 0.0){
+            x0 += 1.0;
+        }
 
         // newton method to check for root
-        for (int i = 0; i < 1000 && !found; i++){
-            x1 = (x0 - ((PolyValue(coefficients, x0)) / (PolyValue(PolyDerivative(coefficients), x0))));
-            Console.WriteLine($"x0: {x0}, x1: {x1}");
-            found = (Math.Abs((x0 - x1)) <= tollerance);
+        for (int i = 0; i < 1000; i++){
+            // Console.WriteLine($"1   x0: {x0}   x1: {x1}   coefVal: {PolyValue(coefficients, x0)}   derVal: {PolyValue(derivative, x0)}");
+            x1 = (x0 - ( (PolyValue(coefficients, x0)) / (PolyValue(derivative, x0)) ));
+            // Console.WriteLine($"2   x0: {x0}   x1: {x1}");
+            if (Math.Abs(x0 - x1) <= tollerance) return x1; // guard clause found root
             x0 = x1;
         }
 
-        return (found)? x1 : double.NaN;
+        return double.NaN;
     }
 
     /*
@@ -119,33 +124,42 @@ public class CM_24_25_PT02{
     */
     public static double[] PolyRoots(double[] coefficients) {
 
-        double[] roots = new double[coefficients.Length];
+        List<double> roots = new List<double>();
         int i = 0;
-        double tmp;
+        double root;
+
         try { 
-        do{
-            tmp = PolyRoot(coefficients);
-            if (tmp == double.NaN) return new double[0];
 
-            // TODO replace coefficients with PolyDiv result
+            do{
+                root = PolyRoot(coefficients);
+                if (root == double.NaN) return new double[0];
 
-            roots[i] = tmp;
-            Console.WriteLine($"PolyRoot result: {roots[i]}");
-            PolyDiv(coefficients, roots[i]);
-            i++;
-        }while (coefficients.Length > 1);
+                // TODO replace coefficients with PolyDiv result
+                roots.Add(root);
+                Console.WriteLine($"PolyRoot result: {root}");
+
+                double[] divResult = PolyDiv(coefficients, root);
+                coefficients = divResult;
+                Array.Resize(ref coefficients, coefficients.Length - 1);
+
+                // polynomial display
+                Console.WriteLine("Polynomial: ");
+                for (int j = 0; j < coefficients.Length; j++){
+                    Console.Write($"{coefficients[j]}x^{coefficients.Length - (j + 1)} ");
+                }
+
+                Console.WriteLine();
+
+
+
+                i++;
+            }while (coefficients.Length > 0);
+
         } catch (Exception e){
             Console.WriteLine($"Exception caught: {e}");
         }
 
-        /*
-        double[] divResult = PolyDiv(coefficients, root);
-        for (int i = 0; i < divResult.Length; i++){
-            Console.Write($"{divResult[i]}x^{divResult.Length - (i + 1)} ");
-        }
-        */
-
-        return roots;
+        return roots.ToArray();
     }
 
     public static void Main(string[] args){
