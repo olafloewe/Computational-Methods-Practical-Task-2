@@ -3,17 +3,6 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 
 public class CM_24_25_PT02{
-    /*
-    public static double PolyValue(double[] coefficients, double x)
-        Input:
-            an array of polynomial coefficients and a single value x
-        Output:
-            a value of a polynomial described by the coefficients at point x
-        Examples:
-            PolyValue({1, -1.5}, 2) 	-> 0.5
-            PolyValue({1, -2, 1}, 0) 	-> 1
-            PolyValue({1, -2, 1}, 3) 	-> 4
-        */
     public static double PolyValue(double[] coefficients, double x){
         double power = 0;
         double result = 0.0;
@@ -22,22 +11,9 @@ public class CM_24_25_PT02{
             power = (power == 0) ? 1 : power * x;
             result += coefficients[coefficients.Length-1-i] * power;
         }
-        // Console.WriteLine($"PolyValue result at {x}: {result}");
         return result;
     }
 
-    /*
-    public static double[] PolyDerivative(double[] coefficients)
-        Input:
-            an array of polynomial coefficients
-        Output:
-            an array of coefficients of the input polynomial derivative
-        Examples:
-            PolyDerivative({1, -1.5}) 		-> {1}
-            PolyDerivative({1, -2, 1}) 		-> {2, -2}
-            PolyDerivative({1, 2, 2}) 		-> {2, 2}
-            PolyDerivative({2, 2, -4, 0}) 	-> {6, 4, -4}
-    */
     public static double[] PolyDerivative(double[] coefficients){
         double[] derivateCoefficients = new double[coefficients.Length - 1];
 
@@ -48,20 +24,7 @@ public class CM_24_25_PT02{
         return derivateCoefficients;
     }
 
-    /*
-    public static double PolyRoot(double[] coefficients)
-        Input:
-            an array of polynomial coefficients
-        Output:
-            an approximation of a single root of the input polynomial or Infinity, if there is none found
-        Examples:
-            PolyRoot({1, -1.5}) 		-> 1.5
-            PolyRoot({1, -2, 1}) 		-> 1
-            PolyRoot({1, 2, 2}) 		-> Infinity
-            PolyRoot({2, 2, -4, 0}) 	-> -2
-    */
     public static double PolyRoot(double[] coefficients){
-        /* Use the `PolyValue` and the `PolyDerivative` methods to implement this function. */
         double[] derivative = PolyDerivative(coefficients);
         double x0 = 5.0;
         double x1 = 0.0;
@@ -73,23 +36,12 @@ public class CM_24_25_PT02{
         for (int i = 0; i < 1000; i++){
             x1 = (x0 - ( (PolyValue(coefficients, x0)) / (PolyValue(derivative, x0)) ));
             if (Math.Abs(x0 - x1) <= tollerance) return x1; // guard clause found root
-            x0 = x1;
+            x0 = x1; // iteration step
         }
 
-        return double.NaN;
+        return double.PositiveInfinity;
     }
 
-    /*
-    public static double[] PolyDiv(double[] coefficients, double xi)
-        Input:
-            an array of polynomial coefficients and its root xi
-        Output:
-            an array of coefficients of the quotient of the division of the input polynomial by (x - xi)
-        Examples:
-            PolyDiv({1, -1.5}, 1.5) 	-> {1}
-            PolyDiv({1, -2, 1}, 1) 		-> {1, -1}
-            PolyDiv({2, 2, -4, 0}, 0) 	-> {2, 2, -4}
-    */
     public static double[] PolyDiv(double[] coefficients, double xi){
         double[] dividedCoefficients = new double[coefficients.Length-1];
 
@@ -102,48 +54,31 @@ public class CM_24_25_PT02{
         return dividedCoefficients;
     }
 
-    /*
-    public static double[] PolyRoots(double[] coefficients)
-        Input:
-            an array of polynomial coefficients
-        Output:
-            an array of real roots of the input polynomial (or their approximations)
-        Examples:
-            PolyRoots({1, -1.5}) 		-> {1.5}
-            PolyRoots({1, -2, 1}) 		-> {1, 1}
-            PolyRoots({1, 2, 2}) 		-> {}
-            PolyRoots({2, 2, -4, 0}) 	-> {0, 1, -2}
-    */
     public static double[] PolyRoots(double[] coefficients) {
-
         List<double> roots = new List<double>();
         double root;
 
-        try { 
+        do {
+            // POLYNOMIAL DISPLAY
+            Console.Write("Polynomial:\t");
+            for (int i = 0; i < coefficients.Length; i++){
+                if (coefficients[i] == 0.0) continue;
+                string sign = (coefficients[i] > 0) ? "+" : "";
+                Console.Write($"{sign}{coefficients[i]}x^{coefficients.Length - (i + 1)} ");
+            }
+            Console.WriteLine();
 
-            do{
-                // POLYNOMIAL DISPLAY
-                Console.Write("Polynomial:\t");
-                for (int j = 0; j < coefficients.Length; j++){
-                    Console.Write($"{coefficients[j]}x^{coefficients.Length - (j + 1)} ");
-                }
-                Console.WriteLine();
+            // ROOT CALCULATION
+            root = PolyRoot(coefficients);
+            if (root == double.PositiveInfinity) return roots.ToArray();
+            roots.Add(root);
+            Console.WriteLine($"PolyRoot result: {root}\n");
 
-                // ROOT CALCULATION
-                root = PolyRoot(coefficients);
-                roots.Add(root);
-                if (root == double.NaN) return new double[0];                
-                Console.WriteLine($"PolyRoot result: {root}\n");
+            // POLYNOMIAL DIVISION
+            double[] divResult = PolyDiv(coefficients, root);
+            coefficients = divResult;
 
-                // POLYNOMIAL DIVISION
-                double[] divResult = PolyDiv(coefficients, root);
-                coefficients = divResult;
-
-            }while (coefficients.Length > 0);
-
-        } catch (Exception e){
-            Console.WriteLine($"Exception caught: {e}");
-        }
+        } while (coefficients.Length > 1);
 
         return roots.ToArray();
     }
@@ -151,39 +86,29 @@ public class CM_24_25_PT02{
     public static void Main(string[] args){
         List<double> nums = new List<double>();
         string source;
+        double number;
 
         // loop to input polynomial coefficients
         do {
-            double number;
-
-            // print formated coefficients
+            // DISPLAY CURRENT INPUT
             Console.Clear();
-            Console.Write("Coefficients so far: ");
-            Console.Write("[ ");
+            Console.Write("Coefficients so far: [ ");
             foreach (double i in nums){
                 Console.Write($"{i}, ");
             }
             Console.Write("]\n");
 
-            Console.WriteLine("Please enter up to 10 positive or negative coefficients: \nEnter 'Q' or 'q' to stop entry");
+            Console.WriteLine("Please enter up to 11 positive or negative coefficients: \nEnter 'Q' or 'q' to stop entry");
             source = Console.ReadLine();
 
+            // guard clause for input read
             if (!double.TryParse(source, out number)) continue;
             nums.Add(number);
-        } while (source.ToLower() != "q" && nums.Count < 10);
-        /*
-        // polynomial display
-        Console.WriteLine("Polynomial: ");
-        for (int i = 0; i < nums.ToArray().Length; i++){
-            Console.Write($"{nums.ToArray()[i]}x^{nums.ToArray().Length - (i + 1)} ");
-        }
-        Console.WriteLine();
-        */
+        } while (source.ToLower() != "q" && nums.Count <= 10);
 
         foreach (double i in PolyRoots(nums.ToArray())){
-            Console.WriteLine($"ROOTS: {i}");
+            Console.WriteLine($"Roots: {i}");
         }
-        
         // HOLD THE LINE (terminal window) !!!
         Console.ReadLine();
     }
