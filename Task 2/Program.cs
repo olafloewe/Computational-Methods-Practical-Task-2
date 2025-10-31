@@ -17,15 +17,12 @@ public class CM_24_25_PT02{
     public static double PolyValue(double[] coefficients, double x){
         double power = 0;
         double result = 0.0;
-        // coefficient nums[i]
-        // exponent (nums.ToArray().Length - (i + 1))
 
         for (int i = 0; i < coefficients.Length; i++){
             power = (power == 0) ? 1 : power * x;
             result += coefficients[coefficients.Length-1-i] * power;
         }
         // Console.WriteLine($"PolyValue result at {x}: {result}");
-        //return (result == 0.0) ? double.NaN : result;
         return result;
     }
 
@@ -68,18 +65,13 @@ public class CM_24_25_PT02{
         double[] derivative = PolyDerivative(coefficients);
         double x0 = 5.0;
         double x1 = 0.0;
-        double tmp;
         double tollerance = 0.0000001;
 
-        while (PolyValue(derivative, x0) == 0.0){
-            x0 += 1.0;
-        }
+        while (PolyValue(derivative, x0) == 0.0) x0 += 1.0;
 
         // newton method to check for root
         for (int i = 0; i < 1000; i++){
-            // Console.WriteLine($"1   x0: {x0}   x1: {x1}   coefVal: {PolyValue(coefficients, x0)}   derVal: {PolyValue(derivative, x0)}");
             x1 = (x0 - ( (PolyValue(coefficients, x0)) / (PolyValue(derivative, x0)) ));
-            // Console.WriteLine($"2   x0: {x0}   x1: {x1}");
             if (Math.Abs(x0 - x1) <= tollerance) return x1; // guard clause found root
             x0 = x1;
         }
@@ -125,34 +117,28 @@ public class CM_24_25_PT02{
     public static double[] PolyRoots(double[] coefficients) {
 
         List<double> roots = new List<double>();
-        int i = 0;
         double root;
 
         try { 
 
             do{
-                root = PolyRoot(coefficients);
-                if (root == double.NaN) return new double[0];
-
-                // TODO replace coefficients with PolyDiv result
-                roots.Add(root);
-                Console.WriteLine($"PolyRoot result: {root}");
-
-                double[] divResult = PolyDiv(coefficients, root);
-                coefficients = divResult;
-                Array.Resize(ref coefficients, coefficients.Length - 1);
-
-                // polynomial display
-                Console.WriteLine("Polynomial: ");
+                // POLYNOMIAL DISPLAY
+                Console.Write("Polynomial:\t");
                 for (int j = 0; j < coefficients.Length; j++){
                     Console.Write($"{coefficients[j]}x^{coefficients.Length - (j + 1)} ");
                 }
-
                 Console.WriteLine();
 
+                // ROOT CALCULATION
+                root = PolyRoot(coefficients);
+                roots.Add(root);
+                if (root == double.NaN) return new double[0];                
+                Console.WriteLine($"PolyRoot result: {root}\n");
 
+                // POLYNOMIAL DIVISION
+                double[] divResult = PolyDiv(coefficients, root);
+                coefficients = divResult;
 
-                i++;
             }while (coefficients.Length > 0);
 
         } catch (Exception e){
@@ -185,14 +171,14 @@ public class CM_24_25_PT02{
             if (!double.TryParse(source, out number)) continue;
             nums.Add(number);
         } while (source.ToLower() != "q" && nums.Count < 10);
-
+        /*
         // polynomial display
         Console.WriteLine("Polynomial: ");
         for (int i = 0; i < nums.ToArray().Length; i++){
             Console.Write($"{nums.ToArray()[i]}x^{nums.ToArray().Length - (i + 1)} ");
         }
         Console.WriteLine();
-
+        */
 
         foreach (double i in PolyRoots(nums.ToArray())){
             Console.WriteLine($"ROOTS: {i}");
