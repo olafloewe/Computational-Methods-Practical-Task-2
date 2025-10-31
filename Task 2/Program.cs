@@ -25,7 +25,7 @@ public class CM_24_25_PT02{
             result += coefficients[coefficients.Length-1-i] * power;
         }
         Console.WriteLine($"PolyValue result at {x}: {result}");
-        return (result == 0.0) ? Double.PositiveInfinity : result; 
+        return (result == 0.0) ? double.NaN : result; 
     }
 
     /*
@@ -78,9 +78,8 @@ public class CM_24_25_PT02{
             found = (Math.Abs((x0 - x1)) <= tollerance);
             x0 = x1;
         }
-        Console.WriteLine($"PolyRoot result: {x1}");
 
-        return (found)? x1 : Double.PositiveInfinity;
+        return (found)? x1 : double.NaN;
     }
 
     /*
@@ -95,8 +94,15 @@ public class CM_24_25_PT02{
             PolyDiv({2, 2, -4, 0}, 0) 	-> {2, 2, -4}
     */
     public static double[] PolyDiv(double[] coefficients, double xi){
-        /* Replace this with your code */
-        return new double[] { };
+        double[] dividedCoefficients = new double[coefficients.Length-1];
+
+        // hornerschema
+        dividedCoefficients[0] = coefficients[0];
+        for (int i = 1; i < coefficients.Length - 1; i++){
+            dividedCoefficients[i] = dividedCoefficients[i - 1] * xi + coefficients[i];
+        }
+
+        return dividedCoefficients;
     }
 
     /*
@@ -111,9 +117,35 @@ public class CM_24_25_PT02{
             PolyRoots({1, 2, 2}) 		-> {}
             PolyRoots({2, 2, -4, 0}) 	-> {0, 1, -2}
     */
-    public static double[] PolyRoots(double[] coefficients){
-        /* Use the `PolyRoot` and the `PolyDiv` methods to implement this function. */
-        return new double[] { };
+    public static double[] PolyRoots(double[] coefficients) {
+
+        double[] roots = new double[coefficients.Length];
+        int i = 0;
+        double tmp;
+        try { 
+        do{
+            tmp = PolyRoot(coefficients);
+            if (tmp == double.NaN) return new double[0];
+
+            // TODO replace coefficients with PolyDiv result
+
+            roots[i] = tmp;
+            Console.WriteLine($"PolyRoot result: {roots[i]}");
+            PolyDiv(coefficients, roots[i]);
+            i++;
+        }while (coefficients.Length > 1);
+        } catch (Exception e){
+            Console.WriteLine($"Exception caught: {e}");
+        }
+
+        /*
+        double[] divResult = PolyDiv(coefficients, root);
+        for (int i = 0; i < divResult.Length; i++){
+            Console.Write($"{divResult[i]}x^{divResult.Length - (i + 1)} ");
+        }
+        */
+
+        return roots;
     }
 
     public static void Main(string[] args){
@@ -143,22 +175,15 @@ public class CM_24_25_PT02{
         // polynomial display
         Console.WriteLine("Polynomial: ");
         for (int i = 0; i < nums.ToArray().Length; i++){
-            Console.Write($"{nums[i]}x^{nums.ToArray().Length - (i + 1)} ");
-        }
-        Console.WriteLine();
-
-        // derivative display
-        double[] derivative = PolyDerivative(nums.ToArray());
-        Console.WriteLine("Derivative: ");
-        for (int i = 0; i < derivative.Length; i++){
-            Console.Write($"{derivative[i]}x^{derivative.Length - (i + 1)} ");
+            Console.Write($"{nums.ToArray()[i]}x^{nums.ToArray().Length - (i + 1)} ");
         }
         Console.WriteLine();
 
 
-        // function call
-        PolyRoot(nums.ToArray());
-
+        foreach (double i in PolyRoots(nums.ToArray())){
+            Console.WriteLine($"ROOTS: {i}");
+        }
+        
         // HOLD THE LINE (terminal window) !!!
         Console.ReadLine();
     }
